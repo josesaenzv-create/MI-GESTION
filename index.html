@@ -1,0 +1,1705 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Mi Gestión Crediban — Ecosistema Corporativo</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Inter:wght@400;500;600;700;800&family=Montserrat:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --accent-color: #59B447;
+      --accent-dark: #1B4332;
+      --bg-app: #f1f5f9;
+      --bg-surface: #ffffff;
+      --bg-subtle: #f8fafc;
+      --text-main: #0f172a;
+      --text-muted: #475569;
+      --border-color: #e2e8f0;
+      --font-active: 'Inter', system-ui, -apple-system, sans-serif;
+    }
+
+    html.dark {
+      --bg-app: #090d16;
+      --bg-surface: #111827;
+      --bg-subtle: #1e293b;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --border-color: #334155;
+    }
+
+    body {
+      font-family: var(--font-active);
+      background-color: var(--bg-app);
+      color: var(--text-main);
+      margin: 0;
+      padding: 0;
+      transition: background-color 0.2s ease, color 0.2s ease;
+    }
+
+    .surface-card {
+      background-color: var(--bg-surface);
+      border-color: var(--border-color);
+      color: var(--text-main);
+    }
+
+    .surface-subtle {
+      background-color: var(--bg-subtle);
+      border-color: var(--border-color);
+    }
+
+    .text-muted-theme {
+      color: var(--text-muted);
+    }
+
+    .border-theme {
+      border-color: var(--border-color);
+    }
+
+    .accent-bg {
+      background-color: var(--accent-color);
+    }
+
+    .accent-text {
+      color: var(--accent-color);
+    }
+
+    .accent-border {
+      border-color: var(--accent-color);
+    }
+
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+    /* Densidad compacta vs cómoda */
+    body.density-compacto .header-pad { padding-top: 0.4rem; padding-bottom: 0.4rem; }
+    body.density-comodo .header-pad { padding-top: 0.7rem; padding-bottom: 0.7rem; }
+
+    body.density-compacto .tab-btn { padding: 0.45rem 0.85rem; font-size: 0.78rem; }
+    body.density-comodo .tab-btn { padding: 0.65rem 1.1rem; font-size: 0.85rem; }
+
+    .code-editor {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+      tab-size: 2;
+    }
+  </style>
+</head>
+<body class="density-comodo min-h-screen flex flex-col">
+
+  <!-- ========================================================================
+       1. PANTALLA DE INICIO DE SESIÓN + VERIFICACIÓN OTP POR CORREO
+  ======================================================================== -->
+  <div id="auth-screen" class="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-[#0f291e] via-[#1B4332] to-slate-900">
+    <div class="w-full max-w-md bg-white text-slate-800 rounded-3xl shadow-2xl overflow-hidden border border-white/10">
+      <!-- Cabecera Institucional -->
+      <div class="p-6 pb-4 border-b border-slate-100 flex flex-col items-center text-center bg-slate-50/70">
+        <div class="inline-flex items-center gap-3 select-none mb-2">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 240" class="w-10 h-12 shrink-0">
+            <g fill="#59B447">
+              <rect x="90" y="8" width="24" height="13" rx="6.5"/>
+              <rect x="71" y="31" width="61" height="13" rx="6.5"/>
+              <rect x="50" y="55" width="74" height="13" rx="6.5"/>
+              <rect x="31" y="79" width="75" height="13" rx="6.5"/>
+              <rect x="24" y="103" width="63" height="13" rx="6.5"/>
+              <rect x="37" y="128" width="24" height="13" rx="6.5"/>
+              <path d="M143 55 C141 78 130 95 111 107 C96 117 81 122 72 134 C62 147 63 166 70 181 C76 195 87 208 97 216 C107 201 118 189 131 177 C144 166 157 156 164 141 C173 123 173 104 168 89 C164 74 156 62 143 55 Z"/>
+            </g>
+          </svg>
+          <div class="flex flex-col text-left">
+            <span style="font-family: Georgia, 'Times New Roman', serif;" class="text-[#59B447] font-bold text-2xl tracking-widest leading-none">CREDIBAN</span>
+            <div class="w-full h-[2px] bg-[#59B447] my-1"></div>
+            <span style="font-family: Arial, Helvetica, sans-serif;" class="text-[10px] font-bold italic text-slate-500 tracking-wide">empieza a construir tus sueños</span>
+          </div>
+        </div>
+        <h1 class="text-lg font-extrabold text-slate-900 mt-1">Mi Gestión Crediban</h1>
+        <p class="text-xs text-slate-500">Acceso Único Corporativo • Ecosistema Modular</p>
+        <div id="server-ping-badge" class="mt-2.5 inline-flex items-center gap-1.5 text-[11px] font-semibold px-3 py-1 rounded-full bg-slate-100 text-slate-600">
+          <span class="w-2 h-2 rounded-full bg-amber-400 animate-pulse"></span> Verificando conexión segura...
+        </div>
+      </div>
+
+      <!-- PASO 1: CREDENCIALES -->
+      <form id="login-form" class="p-6 space-y-4">
+        <div>
+          <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Usuario Corporativo</label>
+          <input id="inp-usuario" type="text" autocomplete="username" placeholder="Ej. CRISTHIAN.TRINIDAD" required
+            class="w-full px-4 py-3 rounded-xl border border-slate-300 text-sm font-semibold uppercase focus:ring-2 focus:ring-[#59B447] focus:border-[#59B447] outline-none" />
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Contraseña</label>
+          <div class="relative">
+            <input id="inp-clave" type="password" autocomplete="current-password" placeholder="Ingresa tu contraseña" required
+              class="w-full px-4 py-3 rounded-xl border border-slate-300 text-sm font-semibold focus:ring-2 focus:ring-[#59B447] focus:border-[#59B447] outline-none pr-12" />
+            <button type="button" id="btn-toggle-pass" class="absolute right-3 top-1/2 -translate-y-1/2 text-xs font-bold text-slate-400 hover:text-slate-700">Ver</button>
+          </div>
+        </div>
+
+        <div id="login-alert" class="hidden p-3 rounded-xl text-xs font-bold bg-red-50 text-red-700 border border-red-200"></div>
+
+        <button type="submit" id="btn-submit-login"
+          class="w-full py-3.5 rounded-xl bg-[#59B447] hover:bg-[#499a39] active:scale-[0.99] text-white font-extrabold text-sm tracking-wide shadow-lg transition-all flex items-center justify-center gap-2">
+          <span>Continuar al Portal</span>
+          <span>➔</span>
+        </button>
+
+        <p class="text-[11px] text-center text-slate-400 pt-1">
+          Autenticación sincronizada con la Base Maestra de Personal CREDIBAN.
+        </p>
+      </form>
+
+      <!-- PASO 2: VERIFICACIÓN TOKEN OTP POR CORREO -->
+      <form id="otp-form" class="hidden p-6 space-y-4">
+        <div class="bg-emerald-50 border border-emerald-200 rounded-2xl p-4 text-center">
+          <div class="text-2xl mb-1">📩</div>
+          <h2 class="text-sm font-extrabold text-emerald-950">Verificación en 2 Pasos (OTP)</h2>
+          <p class="text-xs text-emerald-800 mt-1">
+            Enviamos un código de 6 dígitos a tu correo registrado:<br>
+            <strong id="otp-masked-email" class="font-mono text-sm text-emerald-950">***@gmail.com</strong>
+          </p>
+          <div class="mt-2 inline-block text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-white text-emerald-800 border border-emerald-200">
+            ⏱️ Expira en: <span id="otp-countdown">05:00</span>
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-600 uppercase text-center mb-1.5">Código de Verificación (6 dígitos)</label>
+          <input id="inp-otp-code" type="text" inputmode="numeric" pattern="[0-9]{6}" maxlength="6" placeholder="000000" required
+            class="w-full text-center tracking-[0.55em] font-mono text-2xl font-extrabold py-3.5 rounded-xl border-2 border-slate-300 focus:border-[#59B447] outline-none" />
+        </div>
+
+        <label id="wrap-trust-device" class="flex items-center gap-2.5 p-3 rounded-xl bg-slate-50 border border-slate-200 cursor-pointer">
+          <input id="chk-trust-device" type="checkbox" checked class="w-4 h-4 accent-[#59B447] rounded" />
+          <span class="text-xs font-semibold text-slate-700">Confiar en este dispositivo (no volver a pedir OTP aquí por unos días)</span>
+        </label>
+
+        <div id="otp-alert" class="hidden p-3 rounded-xl text-xs font-bold bg-red-50 text-red-700 border border-red-200"></div>
+
+        <button type="submit" id="btn-submit-otp"
+          class="w-full py-3.5 rounded-xl bg-[#1B4332] hover:bg-[#143326] text-white font-extrabold text-sm tracking-wide shadow-lg transition-all">
+          Verificar Código e Ingresar ✅
+        </button>
+
+        <button type="button" id="btn-back-login" class="w-full py-2 text-xs font-bold text-slate-500 hover:text-slate-800">
+          ← Volver e iniciar sesión nuevamente
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ========================================================================
+       2. PORTAL PRINCIPAL: CONTENEDOR MODULAR "MI GESTIÓN CREDIBAN"
+  ======================================================================== -->
+  <div id="portal-shell" class="hidden flex-1 flex flex-col min-h-screen">
+
+    <!-- Banner Global Opcional (Editable desde Estudio Dev) -->
+    <div id="global-notice-bar" class="hidden bg-amber-500 text-slate-950 text-xs font-extrabold px-4 py-1.5 text-center shadow-sm"></div>
+
+    <!-- Barra Superior Corporativa -->
+    <header class="surface-card border-b border-theme px-4 header-pad sticky top-0 z-30 shadow-sm">
+      <div class="max-w-[1600px] mx-auto flex flex-wrap items-center justify-between gap-3">
+        <!-- Marca e Identidad -->
+        <div class="flex items-center gap-3">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 240" class="w-8 h-10 shrink-0">
+            <g fill="#59B447">
+              <rect x="90" y="8" width="24" height="13" rx="6.5"/>
+              <rect x="71" y="31" width="61" height="13" rx="6.5"/>
+              <rect x="50" y="55" width="74" height="13" rx="6.5"/>
+              <rect x="31" y="79" width="75" height="13" rx="6.5"/>
+              <rect x="24" y="103" width="63" height="13" rx="6.5"/>
+              <rect x="37" y="128" width="24" height="13" rx="6.5"/>
+              <path d="M143 55 C141 78 130 95 111 107 C96 117 81 122 72 134 C62 147 63 166 70 181 C76 195 87 208 97 216 C107 201 118 189 131 177 C144 166 157 156 164 141 C173 123 173 104 168 89 C164 74 156 62 143 55 Z"/>
+            </g>
+          </svg>
+          <div>
+            <div class="flex items-center gap-2">
+              <span style="font-family: Georgia, 'Times New Roman', serif;" class="accent-text font-bold text-lg tracking-wider leading-none">CREDIBAN</span>
+              <span class="text-xs font-extrabold px-2 py-0.5 rounded-md surface-subtle border border-theme" id="portal-title-badge">Mi Gestión Crediban</span>
+            </div>
+            <p class="text-[11px] text-muted-theme hidden sm:block" id="portal-subtitle-text">Ecosistema Corporativo Integrado</p>
+          </div>
+        </div>
+
+        <!-- Controles de Usuario, Simulador de Rol (Solo Dev), Apariencia y Estudio Dev -->
+        <div class="flex items-center gap-2 flex-wrap">
+          <!-- Selector "Ver como..." exclusivo para Desarrollador -->
+          <div id="dev-role-simulator-wrap" class="hidden items-center gap-1.5 px-2.5 py-1 rounded-xl bg-purple-950/10 dark:bg-purple-500/20 border border-purple-400/40">
+            <span class="text-[11px] font-extrabold text-purple-700 dark:text-purple-300">👁️ Vista:</span>
+            <select id="sel-simular-rol" class="text-xs font-bold bg-transparent outline-none cursor-pointer">
+              <option value="">Desarrollador (Real)</option>
+              <option value="GERENTE">Gerente (Jefes)</option>
+              <option value="ADMINISTRADOR">Administrador</option>
+              <option value="JEFE ZONAL">Jefe Zonal</option>
+              <option value="JEFE DE EQUIPO">Jefe de Equipo</option>
+              <option value="CAJERO">Cajero</option>
+              <option value="ASESOR">Asesor</option>
+            </select>
+          </div>
+
+          <!-- Botón Exclusivo Estudio Desarrollador (Invisible para Gerentes y Usuarios) -->
+          <button id="btn-open-dev-studio" type="button"
+            class="hidden items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-900 hover:bg-slate-800 dark:bg-indigo-600 dark:hover:bg-indigo-500 text-white text-xs font-extrabold shadow transition-all">
+            <span>🛠️</span>
+            <span>Estudio Dev</span>
+          </button>
+
+          <!-- Botón Personalización Visual -->
+          <button id="btn-open-appearance" type="button"
+            class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl surface-subtle hover:opacity-90 border border-theme text-xs font-bold transition-all"
+            title="Modo Noche, Tipo de Letra y Tamaño">
+            <span>🎨</span>
+            <span class="hidden md:inline">Apariencia</span>
+          </button>
+
+          <!-- Botón Recargar Módulo Activo -->
+          <button id="btn-reload-active-tab" type="button"
+            class="px-2.5 py-1.5 rounded-xl surface-subtle hover:opacity-90 border border-theme text-xs font-bold"
+            title="Recargar pestaña actual">
+            🔄
+          </button>
+
+          <!-- Ficha del Colaborador -->
+          <div class="hidden lg:flex flex-col text-right px-2 border-l border-theme">
+            <span id="hdr-user-name" class="text-xs font-extrabold leading-tight">USUARIO</span>
+            <span id="hdr-user-meta" class="text-[10px] text-muted-theme font-semibold">CARGO • SEDE</span>
+          </div>
+
+          <!-- Cerrar Sesión -->
+          <button id="btn-logout" type="button"
+            class="px-3 py-1.5 rounded-xl bg-red-600/10 hover:bg-red-600 text-red-600 hover:text-white text-xs font-extrabold transition-all">
+            Salir
+          </button>
+        </div>
+      </div>
+
+      <!-- Barra de Pestañas Dinámicas -->
+      <nav class="max-w-[1600px] mx-auto mt-2.5 pt-2 border-t border-theme flex items-center gap-1.5 overflow-x-auto no-scrollbar" id="tabs-bar">
+        <!-- Se llena dinámicamente según los módulos permitidos -->
+      </nav>
+    </header>
+
+    <!-- Área Principal donde se dibuja la Pestaña Activa -->
+    <main class="flex-1 flex flex-col relative">
+      <!-- Indicador de carga de pestaña -->
+      <div id="module-loader" class="hidden absolute inset-0 z-20 flex flex-col items-center justify-center bg-slate-950/30 backdrop-blur-[2px]">
+        <div class="surface-card border border-theme px-6 py-4 rounded-2xl shadow-xl flex items-center gap-3">
+          <div class="w-5 h-5 border-2 border-[#59B447] border-t-transparent rounded-full animate-spin"></div>
+          <span class="text-xs font-extrabold" id="module-loader-text">Cargando módulo...</span>
+        </div>
+      </div>
+
+      <!-- Pantalla de Bienvenida / Sin Pestañas o Mantenimiento -->
+      <div id="empty-workspace" class="flex-1 flex items-center justify-center p-6">
+        <div class="max-w-xl w-full surface-card border border-theme rounded-3xl p-8 text-center shadow-sm space-y-4">
+          <div class="text-4xl" id="empty-ws-icon">🧩</div>
+          <h2 class="text-xl font-extrabold" id="empty-ws-title">Bienvenido a Mi Gestión Crediban</h2>
+          <p class="text-sm text-muted-theme" id="empty-ws-desc">
+            Selecciona una pestaña en la barra superior para comenzar a operar.
+          </p>
+          <div id="empty-dev-cta" class="hidden pt-2">
+            <button type="button" onclick="abrirEstudioDesarrollador()"
+              class="px-5 py-3 rounded-xl accent-bg text-white font-extrabold text-xs shadow-md hover:opacity-95">
+              🛠️ Abrir Estudio Desarrollador y Agregar Primera Pestaña
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Contenedor Aislado (Iframe) de la App Activa -->
+      <iframe id="app-stage-frame"
+        class="hidden w-full flex-1 border-0 bg-white"
+        style="min-height: calc(100vh - 118px);"
+        sandbox="allow-scripts allow-forms allow-popups allow-modals allow-downloads allow-same-origin allow-top-navigation-by-user-activation"
+        allow="camera; microphone; geolocation; clipboard-read; clipboard-write">
+      </iframe>
+    </main>
+  </div>
+
+  <!-- ========================================================================
+       3. MODAL DE APARIENCIA Y PREFERENCIAS VISUALES (PARA TODOS LOS USUARIOS)
+  ======================================================================== -->
+  <div id="modal-appearance" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
+    <div class="surface-card border border-theme w-full max-w-lg rounded-3xl shadow-2xl overflow-hidden">
+      <div class="p-5 border-b border-theme flex items-center justify-between">
+        <div>
+          <h3 class="text-base font-extrabold">🎨 Apariencia y Comodidad Visual</h3>
+          <p class="text-xs text-muted-theme">Personaliza cómo ves Mi Gestión Crediban en tus dispositivos</p>
+        </div>
+        <button type="button" onclick="cerrarModal('modal-appearance')" class="text-muted-theme hover:opacity-75 font-extrabold text-lg">✕</button>
+      </div>
+
+      <div class="p-5 space-y-4 max-h-[75vh] overflow-y-auto">
+        <!-- Modo Día / Noche -->
+        <div class="flex items-center justify-between p-3.5 rounded-2xl surface-subtle border border-theme">
+          <div>
+            <div class="text-xs font-extrabold">🌓 Tema de Pantalla</div>
+            <div class="text-[11px] text-muted-theme">Cambia entre Modo Día claro y Modo Noche descansado</div>
+          </div>
+          <div class="flex gap-1.5">
+            <button type="button" id="btn-theme-light" onclick="setPrefDraft('tema','light')"
+              class="px-3 py-1.5 rounded-xl text-xs font-extrabold border border-theme">☀️ Día</button>
+            <button type="button" id="btn-theme-dark" onclick="setPrefDraft('tema','dark')"
+              class="px-3 py-1.5 rounded-xl text-xs font-extrabold border border-theme">🌙 Noche</button>
+          </div>
+        </div>
+
+        <!-- Tipo de Letra -->
+        <div>
+          <label class="block text-xs font-extrabold uppercase text-muted-theme mb-1.5">🔤 Tipo de Letra (Tipografía)</label>
+          <select id="pref-fuente" onchange="setPrefDraft('fuente', this.value)"
+            class="w-full px-3.5 py-2.5 rounded-xl surface-subtle border border-theme text-xs font-bold outline-none">
+            <option value="Inter">Inter (Moderna y limpia — Recomendada)</option>
+            <option value="Plus Jakarta Sans">Plus Jakarta Sans (Ejecutiva)</option>
+            <option value="Montserrat">Montserrat (Geométrica institucional)</option>
+            <option value="Roboto">Roboto (Clásica Android / Google)</option>
+            <option value="Atkinson Hyperlegible">Atkinson Hyperlegible (Máxima legibilidad)</option>
+          </select>
+        </div>
+
+        <!-- Tamaño de Texto y Densidad -->
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-extrabold uppercase text-muted-theme mb-1.5">🔍 Tamaño de Letra</label>
+            <select id="pref-tamano" onchange="setPrefDraft('tamanoTexto', this.value)"
+              class="w-full px-3 py-2.5 rounded-xl surface-subtle border border-theme text-xs font-bold outline-none">
+              <option value="100">Normal (100%)</option>
+              <option value="110">Mediano (110%)</option>
+              <option value="120">Grande (120%)</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-extrabold uppercase text-muted-theme mb-1.5">📐 Espaciado</label>
+            <select id="pref-densidad" onchange="setPrefDraft('densidad', this.value)"
+              class="w-full px-3 py-2.5 rounded-xl surface-subtle border border-theme text-xs font-bold outline-none">
+              <option value="comodo">Cómodo</option>
+              <option value="compacto">Compacto</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Color de Acento -->
+        <div>
+          <label class="block text-xs font-extrabold uppercase text-muted-theme mb-1.5">🎯 Color de Acento</label>
+          <div class="grid grid-cols-4 gap-2">
+            <button type="button" onclick="setPrefDraft('colorAcento','#59B447')" class="p-2 rounded-xl border border-theme text-xs font-bold flex items-center justify-center gap-1.5">
+              <span class="w-3.5 h-3.5 rounded-full bg-[#59B447]"></span> Crediban
+            </button>
+            <button type="button" onclick="setPrefDraft('colorAcento','#1B4332')" class="p-2 rounded-xl border border-theme text-xs font-bold flex items-center justify-center gap-1.5">
+              <span class="w-3.5 h-3.5 rounded-full bg-[#1B4332]"></span> Bosque
+            </button>
+            <button type="button" onclick="setPrefDraft('colorAcento','#0D9488')" class="p-2 rounded-xl border border-theme text-xs font-bold flex items-center justify-center gap-1.5">
+              <span class="w-3.5 h-3.5 rounded-full bg-[#0D9488]"></span> Turquesa
+            </button>
+            <button type="button" onclick="setPrefDraft('colorAcento','#2563EB')" class="p-2 rounded-xl border border-theme text-xs font-bold flex items-center justify-center gap-1.5">
+              <span class="w-3.5 h-3.5 rounded-full bg-[#2563EB]"></span> Azul
+            </button>
+          </div>
+        </div>
+
+        <!-- Pestaña Inicial Favorita -->
+        <div>
+          <label class="block text-xs font-extrabold uppercase text-muted-theme mb-1.5">⭐ Pestaña que abre primero al entrar</label>
+          <select id="pref-pestana-inicial" onchange="setPrefDraft('pestanaInicial', this.value)"
+            class="w-full px-3.5 py-2.5 rounded-xl surface-subtle border border-theme text-xs font-bold outline-none">
+            <option value="">Primera pestaña disponible (Automático)</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="p-4 border-t border-theme flex justify-end gap-2">
+        <button type="button" onclick="cerrarModal('modal-appearance')" class="px-4 py-2 rounded-xl text-xs font-bold text-muted-theme">Cancelar</button>
+        <button type="button" id="btn-save-prefs" onclick="guardarPreferenciasEnServidor()"
+          class="px-5 py-2.5 rounded-xl accent-bg text-white text-xs font-extrabold shadow">
+          Guardar Preferencias ✅
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================================
+       4. ESTUDIO DESARROLLADOR (BLINDADO CON CLAVE MAESTRA SHA-256)
+  ======================================================================== -->
+  <div id="modal-dev-studio" class="hidden fixed inset-0 z-50 bg-black/75 backdrop-blur-xs flex items-center justify-center p-2 sm:p-4">
+    <div class="surface-card border border-theme w-full max-w-5xl rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[94vh]">
+      <!-- Cabecera Estudio Dev -->
+      <div class="bg-slate-900 text-white px-5 py-4 flex items-center justify-between">
+        <div class="flex items-center gap-2.5">
+          <span class="text-xl">🛠️</span>
+          <div>
+            <h3 class="text-sm sm:text-base font-extrabold tracking-wide">Estudio Desarrollador — Mi Gestión Crediban</h3>
+            <p class="text-[11px] text-slate-400">Gestión independiente de pestañas HTML, versiones en Drive, política OTP y auditoría</p>
+          </div>
+        </div>
+        <button type="button" onclick="cerrarModal('modal-dev-studio')" class="text-slate-300 hover:text-white font-extrabold text-lg px-2">✕</button>
+      </div>
+
+      <!-- PASO A: BLOQUEO POR CLAVE MAESTRA -->
+      <div id="dev-lock-view" class="p-8 max-w-md mx-auto w-full text-center space-y-4">
+        <div class="text-4xl">🔐</div>
+        <h4 class="text-base font-extrabold">Validación de Clave Maestra</h4>
+        <p class="text-xs text-muted-theme">
+          Este entorno permite modificar el código de las aplicaciones internas. Ingresa tu Clave Maestra privada configurada en la bóveda.
+        </p>
+        <input id="inp-dev-master-key" type="password" placeholder="Clave Maestra de Desarrollador"
+          class="w-full px-4 py-3 rounded-xl surface-subtle border border-theme text-sm font-bold text-center outline-none focus:ring-2 focus:ring-indigo-500" />
+        <div id="dev-lock-alert" class="hidden p-3 rounded-xl text-xs font-bold bg-red-50 text-red-700 border border-red-200"></div>
+        <button type="button" id="btn-unlock-dev" onclick="desbloquearEstudioDev()"
+          class="w-full py-3 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-extrabold text-xs uppercase tracking-wider shadow-lg">
+          Desbloquear Estudio ➔
+        </button>
+      </div>
+
+      <!-- PASO B: PANEL DESBLOQUEADO -->
+      <div id="dev-unlocked-view" class="hidden flex-1 flex flex-col overflow-hidden">
+        <!-- Navegación interna del Estudio -->
+        <div class="surface-subtle border-b border-theme px-4 py-2 flex items-center gap-2 overflow-x-auto no-scrollbar">
+          <button type="button" onclick="cambiarSubtabDev('modulos')" id="dev-sub-btn-modulos"
+            class="px-3.5 py-2 rounded-xl text-xs font-extrabold bg-indigo-600 text-white">
+            🧩 Pestañas y Código HTML
+          </button>
+          <button type="button" onclick="cambiarSubtabDev('config')" id="dev-sub-btn-config"
+            class="px-3.5 py-2 rounded-xl text-xs font-extrabold surface-card border border-theme">
+            ⚙️ Seguridad OTP y Portal
+          </button>
+          <button type="button" onclick="cambiarSubtabDev('snippet')" id="dev-sub-btn-snippet"
+            class="px-3.5 py-2 rounded-xl text-xs font-extrabold surface-card border border-theme">
+            🔌 Conector SSO (15 líneas)
+          </button>
+          <button type="button" onclick="cambiarSubtabDev('auditoria')" id="dev-sub-btn-auditoria"
+            class="px-3.5 py-2 rounded-xl text-xs font-extrabold surface-card border border-theme">
+            🛡️ Auditoría
+          </button>
+        </div>
+
+        <!-- CONTENIDO SUBTAB 1: MÓDULOS Y EDITOR HTML -->
+        <div id="dev-sub-modulos" class="p-4 sm:p-5 overflow-y-auto flex-1 space-y-4">
+          <div class="flex flex-wrap items-center justify-between gap-2">
+            <div>
+              <h4 class="text-sm font-extrabold">Catálogo de Aplicaciones / Pestañas</h4>
+              <p class="text-xs text-muted-theme">Cada pestaña guarda su HTML aislado en Drive con historial de hasta 5 versiones.</p>
+            </div>
+            <button type="button" onclick="prepararFormularioNuevoModulo()"
+              class="px-4 py-2.5 rounded-xl accent-bg text-white text-xs font-extrabold shadow hover:opacity-95">
+              + Nueva Pestaña / App
+            </button>
+          </div>
+
+          <!-- Lista de módulos existentes -->
+          <div id="dev-modules-list" class="grid grid-cols-1 md:grid-cols-2 gap-3"></div>
+
+          <!-- Formulario Crear / Editar Módulo -->
+          <div id="dev-module-editor-card" class="hidden surface-subtle border-2 border-indigo-500/40 rounded-2xl p-4 space-y-3">
+            <div class="flex items-center justify-between border-b border-theme pb-2">
+              <h5 class="text-sm font-extrabold text-indigo-600 dark:text-indigo-400" id="dev-editor-title">Nueva Pestaña Modular</h5>
+              <button type="button" onclick="cerrarEditorModulo()" class="text-xs font-bold text-muted-theme">Cerrar Editor ✕</button>
+            </div>
+
+            <input type="hidden" id="mod-id" />
+
+            <div class="grid grid-cols-1 sm:grid-cols-4 gap-3">
+              <div class="sm:col-span-2">
+                <label class="block text-[11px] font-extrabold uppercase mb-1">Nombre de la Pestaña *</label>
+                <input id="mod-nombre" type="text" placeholder="Ej. Cobranzas IA"
+                  class="w-full px-3 py-2 rounded-xl surface-card border border-theme text-xs font-bold outline-none" />
+              </div>
+              <div>
+                <label class="block text-[11px] font-extrabold uppercase mb-1">Icono (Emoji)</label>
+                <input id="mod-icono" type="text" value="🧩" placeholder="📊"
+                  class="w-full px-3 py-2 rounded-xl surface-card border border-theme text-xs font-bold text-center outline-none" />
+              </div>
+              <div>
+                <label class="block text-[11px] font-extrabold uppercase mb-1">Orden</label>
+                <input id="mod-orden" type="number" value="1" min="1"
+                  class="w-full px-3 py-2 rounded-xl surface-card border border-theme text-xs font-bold outline-none" />
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+              <div>
+                <label class="block text-[11px] font-extrabold uppercase mb-1">Cargos Permitidos</label>
+                <input id="mod-roles" type="text" value="TODOS" placeholder="TODOS o GERENTE, CAJERO, ASESOR"
+                  class="w-full px-3 py-2 rounded-xl surface-card border border-theme text-xs font-bold uppercase outline-none" />
+                <div class="flex flex-wrap gap-1 mt-1">
+                  <button type="button" onclick="setInputVal('mod-roles','TODOS')" class="text-[10px] px-1.5 py-0.5 rounded bg-slate-200 dark:bg-slate-700 font-bold">TODOS</button>
+                  <button type="button" onclick="appendChip('mod-roles','GERENTE')" class="text-[10px] px-1.5 py-0.5 rounded bg-slate-200 dark:bg-slate-700 font-bold">+GERENTE</button>
+                  <button type="button" onclick="appendChip('mod-roles','ADMINISTRADOR')" class="text-[10px] px-1.5 py-0.5 rounded bg-slate-200 dark:bg-slate-700 font-bold">+ADMIN</button>
+                  <button type="button" onclick="appendChip('mod-roles','CAJERO')" class="text-[10px] px-1.5 py-0.5 rounded bg-slate-200 dark:bg-slate-700 font-bold">+CAJERO</button>
+                  <button type="button" onclick="appendChip('mod-roles','ASESOR')" class="text-[10px] px-1.5 py-0.5 rounded bg-slate-200 dark:bg-slate-700 font-bold">+ASESOR</button>
+                </div>
+              </div>
+
+              <div>
+                <label class="block text-[11px] font-extrabold uppercase mb-1">Sedes Permitidas</label>
+                <input id="mod-sedes" type="text" value="TODAS" placeholder="TODAS o HUACHO, HUARAZ, ICA"
+                  class="w-full px-3 py-2 rounded-xl surface-card border border-theme text-xs font-bold uppercase outline-none" />
+                <div class="flex flex-wrap gap-1 mt-1">
+                  <button type="button" onclick="setInputVal('mod-sedes','TODAS')" class="text-[10px] px-1.5 py-0.5 rounded bg-slate-200 dark:bg-slate-700 font-bold">TODAS</button>
+                  <button type="button" onclick="appendChip('mod-sedes','HUACHO')" class="text-[10px] px-1.5 py-0.5 rounded bg-slate-200 dark:bg-slate-700 font-bold">+HUACHO</button>
+                  <button type="button" onclick="appendChip('mod-sedes','HUARAZ')" class="text-[10px] px-1.5 py-0.5 rounded bg-slate-200 dark:bg-slate-700 font-bold">+HUARAZ</button>
+                  <button type="button" onclick="appendChip('mod-sedes','ICA')" class="text-[10px] px-1.5 py-0.5 rounded bg-slate-200 dark:bg-slate-700 font-bold">+ICA</button>
+                  <button type="button" onclick="appendChip('mod-sedes','NUEVA OFICINA')" class="text-[10px] px-1.5 py-0.5 rounded bg-slate-200 dark:bg-slate-700 font-bold">+NUEVA OF.</button>
+                </div>
+              </div>
+
+              <div>
+                <label class="block text-[11px] font-extrabold uppercase mb-1">Estado de Publicación</label>
+                <select id="mod-estado" class="w-full px-3 py-2 rounded-xl surface-card border border-theme text-xs font-bold outline-none">
+                  <option value="SOLO_DESARROLLADOR">🧪 SOLO_DESARROLLADOR (Pruebas)</option>
+                  <option value="ACTIVO">✅ ACTIVO (Visible a usuarios)</option>
+                  <option value="MANTENIMIENTO">🛠️ MANTENIMIENTO</option>
+                  <option value="OCULTO">🙈 OCULTO</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+              <div>
+                <label class="block text-[11px] font-extrabold uppercase mb-1">Modo de Carga</label>
+                <select id="mod-tipo-carga" onchange="toggleTipoCargaEditor()"
+                  class="w-full px-3 py-2 rounded-xl surface-card border border-theme text-xs font-bold outline-none">
+                  <option value="HTML_DRIVE">📄 Pegar Código HTML (Drive Privado)</option>
+                  <option value="URL">🔗 Enlace Web Externo (URL)</option>
+                </select>
+              </div>
+              <div>
+                <label class="block text-[11px] font-extrabold uppercase mb-1">Número de Versión</label>
+                <input id="mod-version" type="text" value="1.0" placeholder="1.0"
+                  class="w-full px-3 py-2 rounded-xl surface-card border border-theme text-xs font-bold outline-none" />
+              </div>
+              <div>
+                <label class="block text-[11px] font-extrabold uppercase mb-1">Notas de esta Versión</label>
+                <input id="mod-notas" type="text" placeholder="Ej. Versión inicial conectada"
+                  class="w-full px-3 py-2 rounded-xl surface-card border border-theme text-xs font-bold outline-none" />
+              </div>
+            </div>
+
+            <!-- Bloque HTML -->
+            <div id="wrap-editor-html" class="space-y-1.5">
+              <div class="flex flex-wrap items-center justify-between gap-2">
+                <label class="text-[11px] font-extrabold uppercase">Código HTML Completo de la App</label>
+                <div class="flex items-center gap-2">
+                  <span id="html-char-counter" class="text-[11px] text-muted-theme font-mono">0 caracteres</span>
+                  <label class="px-2.5 py-1 rounded-lg bg-slate-200 dark:bg-slate-700 text-[11px] font-extrabold cursor-pointer">
+                    📂 Cargar archivo .html
+                    <input type="file" accept=".html,.htm" class="hidden" onchange="cargarArchivoHtmlLocal(event)" />
+                  </label>
+                </div>
+              </div>
+              <textarea id="mod-codigo-html" rows="10"
+                placeholder="Pega aquí el código <!DOCTYPE html> ... </html> completo de esta pestaña. Si solo editas permisos o estado en un módulo existente, puedes dejar este cuadro vacío para conservar el HTML actual."
+                oninput="actualizarContadorHtml()"
+                class="w-full p-3 rounded-xl surface-card border border-theme text-xs code-editor outline-none focus:ring-2 focus:ring-indigo-500"></textarea>
+            </div>
+
+            <!-- Bloque URL Externa -->
+            <div id="wrap-editor-url" class="hidden">
+              <label class="block text-[11px] font-extrabold uppercase mb-1">URL de la Aplicación</label>
+              <input id="mod-url-externa" type="url" placeholder="https://..."
+                class="w-full px-3 py-2.5 rounded-xl surface-card border border-theme text-xs font-bold outline-none" />
+            </div>
+
+            <!-- Historial de Versiones (Rollback) -->
+            <div id="wrap-version-history" class="hidden pt-2 border-t border-theme space-y-2">
+              <div class="text-xs font-extrabold">⏪ Historial de Versiones Guardadas (Restaurar en 1 clic)</div>
+              <div id="dev-version-history-list" class="space-y-1.5"></div>
+            </div>
+
+            <div class="flex justify-end gap-2 pt-2">
+              <button type="button" onclick="cerrarEditorModulo()" class="px-4 py-2 rounded-xl text-xs font-bold text-muted-theme">Cancelar</button>
+              <button type="button" id="btn-save-module" onclick="guardarModuloEnServidor()"
+                class="px-5 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-extrabold shadow">
+                Guardar Pestaña en la Nube 💾
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- CONTENIDO SUBTAB 2: CONFIGURACIÓN GLOBAL Y OTP -->
+        <div id="dev-sub-config" class="hidden p-5 overflow-y-auto flex-1 space-y-4">
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-xs font-extrabold uppercase mb-1">Nombre del Portal</label>
+              <input id="cfg-nombre-portal" type="text" class="w-full px-3.5 py-2.5 rounded-xl surface-subtle border border-theme text-xs font-bold outline-none" />
+            </div>
+            <div>
+              <label class="block text-xs font-extrabold uppercase mb-1">Subtítulo Institucional</label>
+              <input id="cfg-subtitulo-portal" type="text" class="w-full px-3.5 py-2.5 rounded-xl surface-subtle border border-theme text-xs font-bold outline-none" />
+            </div>
+            <div>
+              <label class="block text-xs font-extrabold uppercase mb-1">Política de Token OTP por Correo</label>
+              <select id="cfg-politica-otp" class="w-full px-3.5 py-2.5 rounded-xl surface-subtle border border-theme text-xs font-bold outline-none">
+                <option value="DISPOSITIVO_CONFIABLE">Dispositivo Confiable (Pide OTP 1 vez por equipo)</option>
+                <option value="SIEMPRE">Estricto (Pide OTP en cada inicio de sesión)</option>
+                <option value="SOLO_GERENCIA_DEV">Solo Gerencia y Desarrollador</option>
+                <option value="DESACTIVADO">Desactivado (Solo Usuario + Contraseña)</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-xs font-extrabold uppercase mb-1">Días de Confianza del Navegador (OTP)</label>
+              <input id="cfg-dias-otp" type="number" min="1" max="90" value="15"
+                class="w-full px-3.5 py-2.5 rounded-xl surface-subtle border border-theme text-xs font-bold outline-none" />
+            </div>
+            <div class="sm:col-span-2">
+              <label class="block text-xs font-extrabold uppercase mb-1">Aviso Global en Cabecera (Opcional — Dejar vacío para ocultar)</label>
+              <input id="cfg-aviso-global" type="text" placeholder="Ej. Recordatorio: Cierre mensual de cartera hoy a las 7:00 PM"
+                class="w-full px-3.5 py-2.5 rounded-xl surface-subtle border border-theme text-xs font-bold outline-none" />
+            </div>
+            <div class="sm:col-span-2 pt-2 border-t border-theme">
+              <label class="block text-xs font-extrabold uppercase mb-1 text-indigo-600 dark:text-indigo-400">🔑 Cambiar Clave Maestra de Desarrollador (Opcional, mín. 8 caracteres)</label>
+              <input id="cfg-nueva-clave-maestra" type="password" placeholder="Dejar en blanco para mantener la clave maestra actual"
+                class="w-full px-3.5 py-2.5 rounded-xl surface-subtle border border-theme text-xs font-bold outline-none" />
+            </div>
+          </div>
+
+          <div class="flex justify-end">
+            <button type="button" id="btn-save-portal-cfg" onclick="guardarConfiguracionPortalDev()"
+              class="px-5 py-2.5 rounded-xl accent-bg text-white text-xs font-extrabold shadow">
+              Guardar Configuración del Portal ✅
+            </button>
+          </div>
+        </div>
+
+        <!-- CONTENIDO SUBTAB 3: SNIPPET CONECTOR SSO PARA TUS APPS -->
+        <div id="dev-sub-snippet" class="hidden p-5 overflow-y-auto flex-1 space-y-3">
+          <h4 class="text-sm font-extrabold">🔌 Conector Universal de Sesión Única (SSO)</h4>
+          <p class="text-xs text-muted-theme">
+            Cuando quieras que una de tus apps internas entre directo sin volver a pedir usuario y contraseña al abrirse dentro de <strong>Mi Gestión Crediban</strong>, pega este bloque al inicio de su <code>&lt;script&gt;</code>:
+          </p>
+          <pre id="sso-snippet-box" class="p-4 rounded-2xl bg-slate-950 text-emerald-400 text-xs overflow-x-auto code-editor select-all">// Escucha la sesión iniciada enviada por Mi Gestión Crediban
+window.addEventListener("message", (event) => {
+  if (!event.data || !event.data.type) return;
+
+  if (event.data.type === "CREDIBAN_SSO_SESSION") {
+    const sesion = event.data.session; // { usuario, nombreCompleto, cargo, cargoNormalizado, sede, sedesPermitidas, correo }
+    const prefs  = event.data.preferencias; // { tema: 'light'|'dark', fuente, tamanoTexto, colorAcento }
+    window.CREDIBAN_SSO = sesion;
+    // Llama aquí a la función de tu app que oculta su login y abre el panel con `sesion`
+    if (typeof iniciarConSesionContenedor === "function") {
+      iniciarConSesionContenedor(sesion, prefs);
+    }
+  }
+});
+// Solicitar sesión apenas cargue la pestaña
+if (window.parent !== window) {
+  window.parent.postMessage({ type: "CREDIBAN_REQUEST_SESSION" }, "*");
+}</pre>
+          <button type="button" onclick="copiarSnippetSso()"
+            class="px-4 py-2 rounded-xl bg-indigo-600 text-white text-xs font-extrabold">
+            📋 Copiar Código Conector
+          </button>
+        </div>
+
+        <!-- CONTENIDO SUBTAB 4: LOG DE AUDITORÍA -->
+        <div id="dev-sub-auditoria" class="hidden p-4 overflow-y-auto flex-1">
+          <div class="overflow-x-auto border border-theme rounded-2xl">
+            <table class="w-full text-left text-xs">
+              <thead class="surface-subtle border-b border-theme font-extrabold uppercase text-[10px]">
+                <tr>
+                  <th class="p-2.5">Fecha/Hora</th>
+                  <th class="p-2.5">Usuario</th>
+                  <th class="p-2.5">Perfil</th>
+                  <th class="p-2.5">Acción</th>
+                  <th class="p-2.5">Módulo</th>
+                  <th class="p-2.5">Detalle</th>
+                </tr>
+              </thead>
+              <tbody id="dev-audit-tbody" class="divide-y border-theme"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================================
+       5. MOTOR JAVASCRIPT DEL CONTENEDOR MI GESTIÓN CREDIBAN
+  ======================================================================== -->
+  <script>
+    // URL Oficial del Backend desplegado en Google Apps Script
+    const CONTENEDOR_API_URL = "https://script.google.com/macros/s/AKfycbxqHRabW428DxWcVa2kvcVRqFt2wq_tIA3CGjm4FhQOYhMciaWoAbWbwJU9HlisxPyQbw/exec";
+
+    const KEYS = {
+      SESSION_TOKEN: "crediban_portal_token_v1",
+      TRUST_DEVICE: "crediban_device_trust_v1",
+      PREFS_LOCAL: "crediban_visual_prefs_v1",
+      DEV_TOKEN: "crediban_dev_studio_token_v1"
+    };
+
+    let appState = {
+      token: sessionStorage.getItem(KEYS.SESSION_TOKEN) || "",
+      devToken: sessionStorage.getItem(KEYS.DEV_TOKEN) || "",
+      challengeId: "",
+      perfil: null,
+      configPortal: {},
+      preferencias: {
+        tema: "light",
+        fuente: "Inter",
+        tamanoTexto: "100",
+        densidad: "comodo",
+        colorAcento: "#59B447",
+        pestanaInicial: ""
+      },
+      prefDraft: null,
+      modulos: [],
+      moduloActivoId: "",
+      cacheHtmlModulos: {}, // { "MOD-123_v1.0": "<html>..." }
+      devModulosTodos: [],
+      devConfigCompleta: {},
+      devAuditoria: [],
+      simularRol: ""
+    };
+
+    let otpTimerInterval = null;
+
+    // ------------------------------------------------------------------------
+    // INICIALIZACIÓN
+    // ------------------------------------------------------------------------
+    window.addEventListener("DOMContentLoaded", () => {
+      cargarPreferenciasLocales();
+      verificarConexionServidor();
+
+      document.getElementById("btn-toggle-pass").addEventListener("click", () => {
+        const inp = document.getElementById("inp-clave");
+        inp.type = inp.type === "password" ? "text" : "password";
+      });
+
+      document.getElementById("login-form").addEventListener("submit", manejarLoginPaso1);
+      document.getElementById("otp-form").addEventListener("submit", manejarVerificacionOtp);
+      document.getElementById("btn-back-login").addEventListener("click", volverALoginPaso1);
+
+      document.getElementById("btn-logout").addEventListener("click", cerrarSesionPortal);
+      document.getElementById("btn-open-appearance").addEventListener("click", abrirModalApariencia);
+      document.getElementById("btn-open-dev-studio").addEventListener("click", abrirEstudioDesarrollador);
+      document.getElementById("btn-reload-active-tab").addEventListener("click", () => {
+        if (appState.moduloActivoId) abrirPestanaModulo(appState.moduloActivoId, true);
+      });
+
+      document.getElementById("sel-simular-rol").addEventListener("change", async (e) => {
+        appState.simularRol = e.target.value;
+        await refrescarDatosPortal();
+      });
+
+      // Escuchar solicitudes de sesión desde los iframes hijos
+      window.addEventListener("message", (event) => {
+        if (event.data && event.data.type === "CREDIBAN_REQUEST_SESSION") {
+          enviarSesionAIframeActivo();
+        }
+      });
+
+      // Si ya existe token activo en esta pestaña del navegador, restaurar sesión
+      if (appState.token) {
+        refrescarDatosPortal(true);
+      }
+    });
+
+    async function apiCall(payload) {
+      const res = await fetch(CONTENEDOR_API_URL, {
+        method: "POST",
+        headers: { "Content-Type": "text/plain;charset=utf-8" },
+        body: JSON.stringify(payload)
+      });
+      return await res.json();
+    }
+
+    async function verificarConexionServidor() {
+      const badge = document.getElementById("server-ping-badge");
+      try {
+        const data = await apiCall({ action: "ping" });
+        if (data && data.status === "ok") {
+          badge.className = "mt-2.5 inline-flex items-center gap-1.5 text-[11px] font-bold px-3 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200";
+          badge.innerHTML = `<span class="w-2 h-2 rounded-full bg-emerald-500"></span> Conectado al Servidor Seguro (${data.horaServidor})`;
+        } else {
+          throw new Error("Respuesta inesperada");
+        }
+      } catch (e) {
+        badge.className = "mt-2.5 inline-flex items-center gap-1.5 text-[11px] font-bold px-3 py-1 rounded-full bg-red-50 text-red-700 border border-red-200";
+        badge.innerHTML = `<span class="w-2 h-2 rounded-full bg-red-500"></span> Sin conexión con el servidor`;
+      }
+    }
+
+    // ------------------------------------------------------------------------
+    // AUTENTICACIÓN (PASO 1 CREDENCIALES + PASO 2 OTP)
+    // ------------------------------------------------------------------------
+    async function manejarLoginPaso1(e) {
+      e.preventDefault();
+      const usuario = document.getElementById("inp-usuario").value.trim();
+      const clave = document.getElementById("inp-clave").value.trim();
+      const alertBox = document.getElementById("login-alert");
+      const btn = document.getElementById("btn-submit-login");
+
+      alertBox.classList.add("hidden");
+      btn.disabled = true;
+      btn.innerHTML = `<span>Validando credenciales...</span>`;
+
+      try {
+        const res = await apiCall({
+          action: "iniciarLogin",
+          usuario,
+          clave,
+          deviceTrustToken: localStorage.getItem(KEYS.TRUST_DEVICE) || ""
+        });
+
+        if (res.status === "ok") {
+          completarIngresoAlPortal(res);
+          return;
+        }
+
+        if (res.status === "otp_required") {
+          appState.challengeId = res.challengeId;
+          document.getElementById("otp-masked-email").textContent = res.correoEnmascarado || "***@correo.com";
+          document.getElementById("wrap-trust-device").classList.toggle("hidden", !res.permiteConfiarDispositivo);
+          document.getElementById("login-form").classList.add("hidden");
+          document.getElementById("otp-form").classList.remove("hidden");
+          document.getElementById("inp-otp-code").value = "";
+          document.getElementById("inp-otp-code").focus();
+          iniciarCuentaRegresivaOtp(res.expiraSegundos || 300);
+          return;
+        }
+
+        alertBox.textContent = res.message || "No se pudo iniciar sesión.";
+        alertBox.classList.remove("hidden");
+      } catch (err) {
+        alertBox.textContent = "⚠️ Error de red al conectar con el servidor.";
+        alertBox.classList.remove("hidden");
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = `<span>Continuar al Portal</span><span>➔</span>`;
+      }
+    }
+
+    async function manejarVerificacionOtp(e) {
+      e.preventDefault();
+      const codigoOtp = document.getElementById("inp-otp-code").value.trim();
+      const confiarDispositivo = document.getElementById("chk-trust-device").checked;
+      const alertBox = document.getElementById("otp-alert");
+      const btn = document.getElementById("btn-submit-otp");
+
+      alertBox.classList.add("hidden");
+      btn.disabled = true;
+      btn.textContent = "Verificando código...";
+
+      try {
+        const res = await apiCall({
+          action: "verificarOtpLogin",
+          challengeId: appState.challengeId,
+          codigoOtp,
+          confiarDispositivo
+        });
+
+        if (res.status === "ok") {
+          if (otpTimerInterval) clearInterval(otpTimerInterval);
+          if (res.deviceTrustToken) {
+            localStorage.setItem(KEYS.TRUST_DEVICE, res.deviceTrustToken);
+          }
+          completarIngresoAlPortal(res);
+          return;
+        }
+
+        alertBox.textContent = res.message || "Código OTP inválido.";
+        alertBox.classList.remove("hidden");
+      } catch (err) {
+        alertBox.textContent = "⚠️ Error al verificar el código.";
+        alertBox.classList.remove("hidden");
+      } finally {
+        btn.disabled = false;
+        btn.textContent = "Verificar Código e Ingresar ✅";
+      }
+    }
+
+    function volverALoginPaso1() {
+      if (otpTimerInterval) clearInterval(otpTimerInterval);
+      appState.challengeId = "";
+      document.getElementById("otp-form").classList.add("hidden");
+      document.getElementById("login-form").classList.remove("hidden");
+      document.getElementById("otp-alert").classList.add("hidden");
+    }
+
+    function iniciarCuentaRegresivaOtp(segundosTotales) {
+      if (otpTimerInterval) clearInterval(otpTimerInterval);
+      let restante = segundosTotales;
+      const el = document.getElementById("otp-countdown");
+
+      const pintar = () => {
+        const m = String(Math.floor(restante / 60)).padStart(2, "0");
+        const s = String(restante % 60).padStart(2, "0");
+        el.textContent = `${m}:${s}`;
+      };
+      pintar();
+
+      otpTimerInterval = setInterval(() => {
+        restante--;
+        if (restante <= 0) {
+          clearInterval(otpTimerInterval);
+          el.textContent = "EXPIRADO";
+        } else {
+          pintar();
+        }
+      }, 1000);
+    }
+
+    function completarIngresoAlPortal(data) {
+      appState.token = data.token;
+      sessionStorage.setItem(KEYS.SESSION_TOKEN, data.token);
+      appState.perfil = data.perfil;
+      appState.configPortal = data.configPortal || {};
+      appState.modulos = data.modulos || [];
+
+      if (data.preferencias) {
+        appState.preferencias = Object.assign({}, appState.preferencias, data.preferencias);
+        aplicarPreferenciasVisuales(appState.preferencias);
+      }
+
+      document.getElementById("auth-screen").classList.add("hidden");
+      document.getElementById("portal-shell").classList.remove("hidden");
+
+      renderizarCabeceraYTabs(true);
+    }
+
+    async function refrescarDatosPortal(esRestauracion = false) {
+      try {
+        const res = await apiCall({
+          action: "getPortalData",
+          token: appState.token,
+          simularRol: appState.simularRol
+        });
+
+        if (res.status === "unauthorized") {
+          cerrarSesionPortal();
+          return;
+        }
+
+        if (res.status === "ok") {
+          appState.perfil = res.perfil;
+          appState.configPortal = res.configPortal || {};
+          appState.modulos = res.modulos || [];
+          if (res.preferencias) {
+            appState.preferencias = Object.assign({}, appState.preferencias, res.preferencias);
+            aplicarPreferenciasVisuales(appState.preferencias);
+          }
+
+          if (esRestauracion) {
+            document.getElementById("auth-screen").classList.add("hidden");
+            document.getElementById("portal-shell").classList.remove("hidden");
+          }
+
+          renderizarCabeceraYTabs(esRestauracion);
+        }
+      } catch (e) {
+        if (esRestauracion) cerrarSesionPortal();
+      }
+    }
+
+    function cerrarSesionPortal() {
+      sessionStorage.removeItem(KEYS.SESSION_TOKEN);
+      sessionStorage.removeItem(KEYS.DEV_TOKEN);
+      appState.token = "";
+      appState.devToken = "";
+      appState.perfil = null;
+      appState.modulos = [];
+      appState.moduloActivoId = "";
+      document.getElementById("app-stage-frame").srcdoc = "";
+      document.getElementById("app-stage-frame").classList.add("hidden");
+      document.getElementById("portal-shell").classList.add("hidden");
+      document.getElementById("auth-screen").classList.remove("hidden");
+      volverALoginPaso1();
+    }
+
+    // ------------------------------------------------------------------------
+    // RENDERIZADO DE CABECERA, PESTAÑAS Y CARGA BAJO DEMANDA DE MÓDULOS
+    // ------------------------------------------------------------------------
+    function renderizarCabeceraYTabs(abrirInicial = false) {
+      const p = appState.perfil;
+      const cfg = appState.configPortal;
+
+      document.getElementById("portal-title-badge").textContent = cfg.nombrePortal || "Mi Gestión Crediban";
+      document.getElementById("portal-subtitle-text").textContent = cfg.subtituloPortal || "Ecosistema Corporativo Integrado";
+
+      const avisoBar = document.getElementById("global-notice-bar");
+      if (cfg.avisoGlobal && cfg.avisoGlobal.trim() !== "") {
+        avisoBar.textContent = "📢 " + cfg.avisoGlobal;
+        avisoBar.classList.remove("hidden");
+      } else {
+        avisoBar.classList.add("hidden");
+      }
+
+      document.getElementById("hdr-user-name").textContent = p.nombreCompleto || p.usuario;
+      document.getElementById("hdr-user-meta").textContent = `${p.cargo} • ${p.sede}`;
+
+      // Mostrar controles exclusivos SOLO si es el Desarrollador real
+      const esDev = Boolean(p.esDesarrollador);
+      document.getElementById("btn-open-dev-studio").classList.toggle("hidden", !esDev);
+      document.getElementById("btn-open-dev-studio").classList.toggle("flex", esDev);
+
+      const simWrap = document.getElementById("dev-role-simulator-wrap");
+      simWrap.classList.toggle("hidden", !esDev);
+      simWrap.classList.toggle("flex", esDev);
+
+      // Renderizar barra de pestañas
+      const tabsBar = document.getElementById("tabs-bar");
+      tabsBar.innerHTML = "";
+
+      if (appState.modulos.length === 0) {
+        document.getElementById("app-stage-frame").classList.add("hidden");
+        document.getElementById("empty-workspace").classList.remove("hidden");
+        document.getElementById("empty-ws-icon").textContent = "🧩";
+        document.getElementById("empty-ws-title").textContent = "Aún no hay pestañas habilitadas para este perfil";
+        document.getElementById("empty-ws-desc").textContent = esDev
+          ? "Usa el Estudio Desarrollador para subir tu primera aplicación HTML como pestaña."
+          : "Comunícate con Sistemas si necesitas acceso a un módulo operativo.";
+        document.getElementById("empty-dev-cta").classList.toggle("hidden", !esDev);
+        return;
+      }
+
+      document.getElementById("empty-dev-cta").classList.add("hidden");
+
+      appState.modulos.forEach((mod) => {
+        const activa = mod.idModulo === appState.moduloActivoId;
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = `tab-btn rounded-xl font-extrabold whitespace-nowrap flex items-center gap-1.5 transition-all border ${
+          activa
+            ? "accent-bg text-white border-transparent shadow-sm"
+            : "surface-subtle border-theme hover:opacity-85"
+        }`;
+
+        let badgeEstado = "";
+        if (mod.estado === "SOLO_DESARROLLADOR") {
+          badgeEstado = `<span class="text-[9px] px-1.5 py-0.2 rounded bg-purple-600 text-white">DEV</span>`;
+        } else if (mod.estado === "MANTENIMIENTO") {
+          badgeEstado = `<span class="text-[9px] px-1.5 py-0.2 rounded bg-amber-500 text-slate-950">MANT.</span>`;
+        }
+
+        btn.innerHTML = `<span>${mod.icono || "🧩"}</span><span>${mod.nombrePestana}</span>${badgeEstado}`;
+        btn.onclick = () => abrirPestanaModulo(mod.idModulo, false);
+        tabsBar.appendChild(btn);
+      });
+
+      // Seleccionar pestaña inicial si corresponde
+      if (abrirInicial || !appState.modulos.some(m => m.idModulo === appState.moduloActivoId)) {
+        const fav = appState.preferencias.pestanaInicial;
+        const elegida = appState.modulos.find(m => m.idModulo === fav) || appState.modulos[0];
+        if (elegida) abrirPestanaModulo(elegida.idModulo, false);
+      }
+    }
+
+    async function abrirPestanaModulo(idModulo, forzarRecarga = false) {
+      const mod = appState.modulos.find(m => m.idModulo === idModulo);
+      if (!mod) return;
+
+      appState.moduloActivoId = idModulo;
+      renderizarCabeceraYTabs(false);
+
+      const frame = document.getElementById("app-stage-frame");
+      const emptyBox = document.getElementById("empty-workspace");
+      const loader = document.getElementById("module-loader");
+      document.getElementById("module-loader-text").textContent = `Abriendo ${mod.nombrePestana} (v${mod.versionActiva})...`;
+
+      const cacheKey = `${mod.idModulo}__v${mod.versionActiva}`;
+      if (!forzarRecarga && appState.cacheHtmlModulos[cacheKey]) {
+        mostrarHtmlEnIframe(appState.cacheHtmlModulos[cacheKey]);
+        return;
+      }
+
+      loader.classList.remove("hidden");
+      try {
+        const res = await apiCall({
+          action: "obtenerCodigoModulo",
+          token: appState.token,
+          idModulo
+        });
+
+        if (res.status === "unauthorized") {
+          cerrarSesionPortal();
+          return;
+        }
+
+        if (res.status === "maintenance") {
+          frame.classList.add("hidden");
+          emptyBox.classList.remove("hidden");
+          document.getElementById("empty-ws-icon").textContent = "🛠️";
+          document.getElementById("empty-ws-title").textContent = `${mod.nombrePestana} en Mantenimiento`;
+          document.getElementById("empty-ws-desc").textContent = res.message;
+          return;
+        }
+
+        if (res.status === "ok") {
+          if (res.tipoCarga === "URL") {
+            emptyBox.classList.add("hidden");
+            frame.removeAttribute("srcdoc");
+            frame.src = res.url;
+            frame.classList.remove("hidden");
+            frame.onload = () => enviarSesionAIframeActivo();
+          } else {
+            appState.cacheHtmlModulos[cacheKey] = res.html;
+            mostrarHtmlEnIframe(res.html);
+          }
+          return;
+        }
+
+        frame.classList.add("hidden");
+        emptyBox.classList.remove("hidden");
+        document.getElementById("empty-ws-icon").textContent = "⚠️";
+        document.getElementById("empty-ws-title").textContent = "No se pudo abrir la pestaña";
+        document.getElementById("empty-ws-desc").textContent = res.message || "Error inesperado.";
+      } catch (err) {
+        alert("Error de red al cargar el módulo: " + err.message);
+      } finally {
+        loader.classList.add("hidden");
+      }
+    }
+
+    function mostrarHtmlEnIframe(htmlCode) {
+      const frame = document.getElementById("app-stage-frame");
+      const emptyBox = document.getElementById("empty-workspace");
+      emptyBox.classList.add("hidden");
+      frame.removeAttribute("src");
+      frame.srcdoc = htmlCode;
+      frame.classList.remove("hidden");
+      frame.onload = () => enviarSesionAIframeActivo();
+    }
+
+    function enviarSesionAIframeActivo() {
+      const frame = document.getElementById("app-stage-frame");
+      if (!frame || !frame.contentWindow || !appState.perfil) return;
+      try {
+        frame.contentWindow.postMessage({
+          type: "CREDIBAN_SSO_SESSION",
+          session: {
+            usuario: appState.perfil.usuario,
+            nombreCompleto: appState.perfil.nombreCompleto,
+            cargo: appState.perfil.cargo,
+            cargoNormalizado: appState.perfil.cargoNormalizado,
+            sede: appState.perfil.sede,
+            sedesPermitidas: appState.perfil.sedesPermitidas,
+            correo: appState.perfil.correo,
+            area: appState.perfil.area,
+            equipo: appState.perfil.equipo,
+            perfilPortal: appState.perfil.perfilPortal,
+            tokenContenedor: appState.token
+          },
+          preferencias: appState.preferencias
+        }, "*");
+      } catch (e) {}
+    }
+
+    // ------------------------------------------------------------------------
+    // MOTOR DE APARIENCIA Y PREFERENCIAS VISUALES
+    // ------------------------------------------------------------------------
+    function cargarPreferenciasLocales() {
+      try {
+        const raw = localStorage.getItem(KEYS.PREFS_LOCAL);
+        if (raw) {
+          appState.preferencias = Object.assign({}, appState.preferencias, JSON.parse(raw));
+        }
+      } catch (e) {}
+      aplicarPreferenciasVisuales(appState.preferencias);
+    }
+
+    function aplicarPreferenciasVisuales(prefs) {
+      const html = document.documentElement;
+      html.classList.toggle("dark", prefs.tema === "dark");
+
+      const fontMap = {
+        "Inter": "'Inter', system-ui, sans-serif",
+        "Plus Jakarta Sans": "'Plus Jakarta Sans', sans-serif",
+        "Montserrat": "'Montserrat', sans-serif",
+        "Roboto": "'Roboto', sans-serif",
+        "Atkinson Hyperlegible": "'Atkinson Hyperlegible', sans-serif"
+      };
+      html.style.setProperty("--font-active", fontMap[prefs.fuente] || fontMap["Inter"]);
+      html.style.setProperty("--accent-color", prefs.colorAcento || "#59B447");
+      html.style.fontSize = `${Number(prefs.tamanoTexto) || 100}%`;
+
+      document.body.classList.remove("density-comodo", "density-compacto");
+      document.body.classList.add(prefs.densidad === "compacto" ? "density-compacto" : "density-comodo");
+
+      localStorage.setItem(KEYS.PREFS_LOCAL, JSON.stringify(prefs));
+
+      // Notificar cambio de tema al iframe activo
+      const frame = document.getElementById("app-stage-frame");
+      if (frame && frame.contentWindow) {
+        try {
+          frame.contentWindow.postMessage({
+            type: "CREDIBAN_THEME_CHANGE",
+            preferencias: prefs
+          }, "*");
+        } catch (e) {}
+      }
+    }
+
+    function abrirModalApariencia() {
+      appState.prefDraft = Object.assign({}, appState.preferencias);
+      document.getElementById("pref-fuente").value = appState.prefDraft.fuente;
+      document.getElementById("pref-tamano").value = appState.prefDraft.tamanoTexto;
+      document.getElementById("pref-densidad").value = appState.prefDraft.densidad;
+
+      const selFav = document.getElementById("pref-pestana-inicial");
+      selFav.innerHTML = `<option value="">Primera pestaña disponible (Automático)</option>` +
+        appState.modulos.map(m => `<option value="${m.idModulo}">${m.icono} ${m.nombrePestana}</option>`).join("");
+      selFav.value = appState.prefDraft.pestanaInicial || "";
+
+      actualizarBotonesTemaModal();
+      document.getElementById("modal-appearance").classList.remove("hidden");
+    }
+
+    function setPrefDraft(clave, valor) {
+      appState.prefDraft[clave] = valor;
+      aplicarPreferenciasVisuales(appState.prefDraft);
+      if (clave === "tema") actualizarBotonesTemaModal();
+    }
+
+    function actualizarBotonesTemaModal() {
+      const esDark = appState.prefDraft.tema === "dark";
+      document.getElementById("btn-theme-light").className = `px-3 py-1.5 rounded-xl text-xs font-extrabold border ${!esDark ? "accent-bg text-white border-transparent" : "border-theme"}`;
+      document.getElementById("btn-theme-dark").className = `px-3 py-1.5 rounded-xl text-xs font-extrabold border ${esDark ? "accent-bg text-white border-transparent" : "border-theme"}`;
+    }
+
+    async function guardarPreferenciasEnServidor() {
+      const btn = document.getElementById("btn-save-prefs");
+      btn.disabled = true;
+      btn.textContent = "Guardando...";
+      appState.preferencias = Object.assign({}, appState.prefDraft);
+      aplicarPreferenciasVisuales(appState.preferencias);
+
+      try {
+        await apiCall({
+          action: "guardarPreferenciasUsuario",
+          token: appState.token,
+          preferencias: appState.preferencias
+        });
+        cerrarModal("modal-appearance");
+      } catch (e) {
+        cerrarModal("modal-appearance");
+      } finally {
+        btn.disabled = false;
+        btn.textContent = "Guardar Preferencias ✅";
+      }
+    }
+
+    // ------------------------------------------------------------------------
+    // ESTUDIO DESARROLLADOR (EXCLUSIVO PARA TI)
+    // ------------------------------------------------------------------------
+    function abrirEstudioDesarrollador() {
+      if (!appState.perfil || !appState.perfil.esDesarrollador) return;
+      document.getElementById("modal-dev-studio").classList.remove("hidden");
+      document.getElementById("dev-lock-alert").classList.add("hidden");
+      document.getElementById("inp-dev-master-key").value = "";
+
+      // Siempre pedir Clave Maestra al abrir si no hay devToken activo en esta sesión
+      if (!appState.devToken) {
+        document.getElementById("dev-lock-view").classList.remove("hidden");
+        document.getElementById("dev-unlocked-view").classList.add("hidden");
+        document.getElementById("inp-dev-master-key").focus();
+      } else {
+        document.getElementById("dev-lock-view").classList.add("hidden");
+        document.getElementById("dev-unlocked-view").classList.remove("hidden");
+        renderizarPanelDesarrollador();
+      }
+    }
+
+    async function desbloquearEstudioDev() {
+      const claveMaestra = document.getElementById("inp-dev-master-key").value.trim();
+      const alertBox = document.getElementById("dev-lock-alert");
+      const btn = document.getElementById("btn-unlock-dev");
+
+      if (!claveMaestra) return;
+      alertBox.classList.add("hidden");
+      btn.disabled = true;
+      btn.textContent = "Verificando Clave Maestra...";
+
+      try {
+        const res = await apiCall({
+          action: "desbloquearEstudioDesarrollador",
+          token: appState.token,
+          claveMaestra
+        });
+
+        if (res.status === "ok") {
+          appState.devToken = res.devToken;
+          sessionStorage.setItem(KEYS.DEV_TOKEN, res.devToken);
+          appState.devModulosTodos = res.modulosTodos || [];
+          appState.devConfigCompleta = res.configCompleta || {};
+          appState.devAuditoria = res.auditoriaReciente || [];
+
+          document.getElementById("dev-lock-view").classList.add("hidden");
+          document.getElementById("dev-unlocked-view").classList.remove("hidden");
+          renderizarPanelDesarrollador();
+          return;
+        }
+
+        alertBox.textContent = res.message || "Clave Maestra incorrecta.";
+        alertBox.classList.remove("hidden");
+      } catch (e) {
+        alertBox.textContent = "Error de conexión con la bóveda.";
+        alertBox.classList.remove("hidden");
+      } finally {
+        btn.disabled = false;
+        btn.textContent = "Desbloquear Estudio ➔";
+      }
+    }
+
+    function cambiarSubtabDev(sub) {
+      ["modulos", "config", "snippet", "auditoria"].forEach(s => {
+        document.getElementById(`dev-sub-${s}`).classList.toggle("hidden", s !== sub);
+        const btn = document.getElementById(`dev-sub-btn-${s}`);
+        btn.className = s === sub
+          ? "px-3.5 py-2 rounded-xl text-xs font-extrabold bg-indigo-600 text-white"
+          : "px-3.5 py-2 rounded-xl text-xs font-extrabold surface-card border border-theme";
+      });
+    }
+
+    function renderizarPanelDesarrollador() {
+      // 1. Lista de Módulos
+      const listEl = document.getElementById("dev-modules-list");
+      if (appState.devModulosTodos.length === 0) {
+        listEl.innerHTML = `<div class="col-span-full p-6 text-center text-xs text-muted-theme surface-subtle rounded-2xl border border-theme">No hay módulos registrados aún. Haz clic en "+ Nueva Pestaña / App".</div>`;
+      } else {
+        listEl.innerHTML = appState.devModulosTodos.map(m => {
+          const badgeColor = m.estado === "ACTIVO"
+            ? "bg-emerald-100 text-emerald-800"
+            : m.estado === "SOLO_DESARROLLADOR"
+              ? "bg-purple-100 text-purple-800"
+              : "bg-amber-100 text-amber-800";
+          return `
+            <div class="surface-subtle border border-theme rounded-2xl p-3.5 flex flex-col justify-between gap-2.5">
+              <div>
+                <div class="flex items-center justify-between gap-2">
+                  <div class="font-extrabold text-sm">${m.icono} ${m.nombrePestana} <span class="text-[11px] font-mono text-muted-theme">v${m.versionActiva}</span></div>
+                  <span class="text-[10px] font-black px-2 py-0.5 rounded-full ${badgeColor}">${m.estado}</span>
+                </div>
+                <div class="text-[11px] text-muted-theme mt-1">
+                  Orden: <strong>#${m.orden}</strong> • Cargos: <strong>${m.rolesPermitidos}</strong> • Sedes: <strong>${m.sedesPermitidas}</strong>
+                </div>
+                <div class="text-[10px] text-muted-theme mt-0.5">Actualizado: ${m.fechaActualizacion || "-"} (${m.notasVersion || "-"})</div>
+              </div>
+              <div class="flex flex-wrap gap-1.5 pt-2 border-t border-theme">
+                <button type="button" onclick="editarModuloExistente('${m.idModulo}')" class="px-2.5 py-1 rounded-lg bg-indigo-600 text-white text-[11px] font-bold">✏️ Editar / Subir HTML</button>
+                ${m.estado !== "ACTIVO"
+                  ? `<button type="button" onclick="cambiarEstadoRapidoModulo('${m.idModulo}','ACTIVO')" class="px-2.5 py-1 rounded-lg bg-emerald-600 text-white text-[11px] font-bold">✅ Publicar</button>`
+                  : `<button type="button" onclick="cambiarEstadoRapidoModulo('${m.idModulo}','SOLO_DESARROLLADOR')" class="px-2.5 py-1 rounded-lg bg-purple-600 text-white text-[11px] font-bold">🧪 Pasar a Pruebas</button>`
+                }
+                <button type="button" onclick="eliminarModuloConfirmado('${m.idModulo}','${m.nombrePestana.replace(/'/g, "")}')" class="px-2 py-1 rounded-lg bg-red-600/10 text-red-600 text-[11px] font-bold ml-auto">🗑️</button>
+              </div>
+            </div>
+          `;
+        }).join("");
+      }
+
+      // 2. Configuración del Portal
+      const c = appState.devConfigCompleta;
+      document.getElementById("cfg-nombre-portal").value = c.NOMBRE_PORTAL || "Mi Gestión Crediban";
+      document.getElementById("cfg-subtitulo-portal").value = c.SUBTITULO_PORTAL || "Ecosistema Corporativo Integrado";
+      document.getElementById("cfg-politica-otp").value = c.POLITICA_OTP || "DISPOSITIVO_CONFIABLE";
+      document.getElementById("cfg-dias-otp").value = c.DIAS_CONFIANZA_OTP || "15";
+      document.getElementById("cfg-aviso-global").value = c.AVISO_GLOBAL || "";
+      document.getElementById("cfg-nueva-clave-maestra").value = "";
+
+      // 3. Auditoría
+      const tbody = document.getElementById("dev-audit-tbody");
+      tbody.innerHTML = appState.devAuditoria.map(a => `
+        <tr>
+          <td class="p-2 whitespace-nowrap font-mono text-[11px]">${a.fechaHora}</td>
+          <td class="p-2 font-bold">${a.usuario}</td>
+          <td class="p-2 text-[11px]">${a.perfilPortal}</td>
+          <td class="p-2 font-bold text-indigo-600 dark:text-indigo-400">${a.accion}</td>
+          <td class="p-2">${a.modulo}</td>
+          <td class="p-2 text-muted-theme">${a.detalle}</td>
+        </tr>
+      `).join("");
+    }
+
+    function prepararFormularioNuevoModulo() {
+      document.getElementById("dev-editor-title").textContent = "Nueva Pestaña Modular";
+      document.getElementById("mod-id").value = "";
+      document.getElementById("mod-nombre").value = "";
+      document.getElementById("mod-icono").value = "🧩";
+      document.getElementById("mod-orden").value = appState.devModulosTodos.length + 1;
+      document.getElementById("mod-roles").value = "TODOS";
+      document.getElementById("mod-sedes").value = "TODAS";
+      document.getElementById("mod-estado").value = "SOLO_DESARROLLADOR";
+      document.getElementById("mod-tipo-carga").value = "HTML_DRIVE";
+      document.getElementById("mod-version").value = "1.0";
+      document.getElementById("mod-notas").value = "Versión inicial";
+      document.getElementById("mod-codigo-html").value = "";
+      document.getElementById("mod-url-externa").value = "";
+      document.getElementById("wrap-version-history").classList.add("hidden");
+      toggleTipoCargaEditor();
+      actualizarContadorHtml();
+      document.getElementById("dev-module-editor-card").classList.remove("hidden");
+      document.getElementById("dev-module-editor-card").scrollIntoView({ behavior: "smooth" });
+    }
+
+    function editarModuloExistente(idModulo) {
+      const m = appState.devModulosTodos.find(x => x.idModulo === idModulo);
+      if (!m) return;
+
+      document.getElementById("dev-editor-title").textContent = `Editando: ${m.nombrePestana} (Actual: v${m.versionActiva})`;
+      document.getElementById("mod-id").value = m.idModulo;
+      document.getElementById("mod-nombre").value = m.nombrePestana;
+      document.getElementById("mod-icono").value = m.icono || "🧩";
+      document.getElementById("mod-orden").value = m.orden || 1;
+      document.getElementById("mod-roles").value = m.rolesPermitidos || "TODOS";
+      document.getElementById("mod-sedes").value = m.sedesPermitidas || "TODAS";
+      document.getElementById("mod-estado").value = m.estado || "ACTIVO";
+      document.getElementById("mod-tipo-carga").value = m.tipoCarga || "HTML_DRIVE";
+
+      // Sugerir siguiente versión menor
+      const partes = String(m.versionActiva || "1.0").split(".");
+      const nextVer = partes.length >= 2 && !isNaN(Number(partes[partes.length - 1]))
+        ? `${partes.slice(0, -1).join(".")}.${Number(partes[partes.length - 1]) + 1}`
+        : `${m.versionActiva}.1`;
+      document.getElementById("mod-version").value = nextVer;
+      document.getElementById("mod-notas").value = "";
+      document.getElementById("mod-codigo-html").value = "";
+      document.getElementById("mod-url-externa").value = m.tipoCarga === "URL" ? m.referenciaActiva : "";
+
+      toggleTipoCargaEditor();
+      actualizarContadorHtml();
+
+      // Renderizar historial de versiones para Rollback
+      const histWrap = document.getElementById("wrap-version-history");
+      const histList = document.getElementById("dev-version-history-list");
+      if (Array.isArray(m.historialVersiones) && m.historialVersiones.length > 0) {
+        histWrap.classList.remove("hidden");
+        histList.innerHTML = m.historialVersiones.map(v => `
+          <div class="flex items-center justify-between gap-2 p-2 rounded-xl surface-card border border-theme text-[11px]">
+            <div>
+              <strong>v${v.version}</strong> • ${v.fecha} • <span class="text-muted-theme">${v.notas || "-"}</span>
+            </div>
+            ${v.fileId === m.referenciaActiva
+              ? `<span class="px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 font-bold">Activa</span>`
+              : `<button type="button" onclick="restaurarVersionHistorial('${m.idModulo}','${v.fileId}','${v.version}')" class="px-2.5 py-1 rounded-lg bg-amber-500 text-slate-950 font-extrabold">⏪ Restaurar</button>`
+            }
+          </div>
+        `).join("");
+      } else {
+        histWrap.classList.add("hidden");
+      }
+
+      document.getElementById("dev-module-editor-card").classList.remove("hidden");
+      document.getElementById("dev-module-editor-card").scrollIntoView({ behavior: "smooth" });
+    }
+
+    function cerrarEditorModulo() {
+      document.getElementById("dev-module-editor-card").classList.add("hidden");
+    }
+
+    function toggleTipoCargaEditor() {
+      const tipo = document.getElementById("mod-tipo-carga").value;
+      document.getElementById("wrap-editor-html").classList.toggle("hidden", tipo !== "HTML_DRIVE");
+      document.getElementById("wrap-editor-url").classList.toggle("hidden", tipo !== "URL");
+    }
+
+    function actualizarContadorHtml() {
+      const txt = document.getElementById("mod-codigo-html").value || "";
+      const lineas = txt ? txt.split("\n").length : 0;
+      document.getElementById("html-char-counter").textContent = `${txt.length.toLocaleString()} caracteres • ${lineas.toLocaleString()} líneas`;
+    }
+
+    function cargarArchivoHtmlLocal(e) {
+      const file = e.target.files && e.target.files[0];
+      e.target.value = null;
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = (ev) => {
+        document.getElementById("mod-codigo-html").value = ev.target.result || "";
+        actualizarContadorHtml();
+      };
+      reader.readAsText(file, "UTF-8");
+    }
+
+    async function guardarModuloEnServidor() {
+      const btn = document.getElementById("btn-save-module");
+      const modulo = {
+        idModulo: document.getElementById("mod-id").value.trim(),
+        nombrePestana: document.getElementById("mod-nombre").value.trim(),
+        icono: document.getElementById("mod-icono").value.trim() || "🧩",
+        orden: Number(document.getElementById("mod-orden").value) || 1,
+        rolesPermitidos: document.getElementById("mod-roles").value.trim() || "TODOS",
+        sedesPermitidas: document.getElementById("mod-sedes").value.trim() || "TODAS",
+        estado: document.getElementById("mod-estado").value,
+        tipoCarga: document.getElementById("mod-tipo-carga").value,
+        version: document.getElementById("mod-version").value.trim() || "1.0",
+        notasVersion: document.getElementById("mod-notas").value.trim(),
+        codigoHtml: document.getElementById("mod-codigo-html").value,
+        urlExterna: document.getElementById("mod-url-externa").value.trim()
+      };
+
+      if (!modulo.nombrePestana) {
+        alert("Ingresa el nombre de la pestaña.");
+        return;
+      }
+
+      btn.disabled = true;
+      btn.textContent = "Guardando en Drive y Sheets...";
+      try {
+        const res = await apiCall({
+          action: "guardarModuloApp",
+          token: appState.token,
+          devToken: appState.devToken,
+          modulo
+        });
+
+        if (manejarExpiracionDevToken(res)) return;
+
+        if (res.status === "ok") {
+          appState.devModulosTodos = res.modulosTodos || [];
+          appState.cacheHtmlModulos = {}; // Limpiar caché para cargar la nueva versión al instante
+          cerrarEditorModulo();
+          renderizarPanelDesarrollador();
+          await refrescarDatosPortal();
+          alert(res.message);
+        } else {
+          alert(res.message || "Error al guardar módulo.");
+        }
+      } catch (e) {
+        alert("Error de red al guardar el módulo.");
+      } finally {
+        btn.disabled = false;
+        btn.textContent = "Guardar Pestaña en la Nube 💾";
+      }
+    }
+
+    async function restaurarVersionHistorial(idModulo, fileId, version) {
+      if (!confirm(`¿Restaurar este módulo a la versión v${version}?`)) return;
+      try {
+        const res = await apiCall({
+          action: "restaurarVersionModulo",
+          token: appState.token,
+          devToken: appState.devToken,
+          idModulo,
+          fileId,
+          version
+        });
+        if (manejarExpiracionDevToken(res)) return;
+        if (res.status === "ok") {
+          appState.devModulosTodos = res.modulosTodos || [];
+          appState.cacheHtmlModulos = {};
+          cerrarEditorModulo();
+          renderizarPanelDesarrollador();
+          await refrescarDatosPortal();
+          alert(res.message);
+        } else {
+          alert(res.message);
+        }
+      } catch (e) {
+        alert("Error de red al restaurar versión.");
+      }
+    }
+
+    async function cambiarEstadoRapidoModulo(idModulo, nuevoEstado) {
+      try {
+        const res = await apiCall({
+          action: "actualizarEstadoModulo",
+          token: appState.token,
+          devToken: appState.devToken,
+          idModulo,
+          estado: nuevoEstado
+        });
+        if (manejarExpiracionDevToken(res)) return;
+        if (res.status === "ok") {
+          appState.devModulosTodos = res.modulosTodos || [];
+          renderizarPanelDesarrollador();
+          await refrescarDatosPortal();
+        }
+      } catch (e) {}
+    }
+
+    async function eliminarModuloConfirmado(idModulo, nombre) {
+      if (!confirm(`¿Eliminar la pestaña "${nombre}" del catálogo del portal? (Los archivos históricos en Drive no se borran).`)) return;
+      try {
+        const res = await apiCall({
+          action: "eliminarModuloApp",
+          token: appState.token,
+          devToken: appState.devToken,
+          idModulo
+        });
+        if (manejarExpiracionDevToken(res)) return;
+        if (res.status === "ok") {
+          appState.devModulosTodos = res.modulosTodos || [];
+          renderizarPanelDesarrollador();
+          await refrescarDatosPortal();
+        }
+      } catch (e) {}
+    }
+
+    async function guardarConfiguracionPortalDev() {
+      const btn = document.getElementById("btn-save-portal-cfg");
+      btn.disabled = true;
+      btn.textContent = "Guardando...";
+      const config = {
+        NOMBRE_PORTAL: document.getElementById("cfg-nombre-portal").value.trim(),
+        SUBTITULO_PORTAL: document.getElementById("cfg-subtitulo-portal").value.trim(),
+        POLITICA_OTP: document.getElementById("cfg-politica-otp").value,
+        DIAS_CONFIANZA_OTP: document.getElementById("cfg-dias-otp").value,
+        AVISO_GLOBAL: document.getElementById("cfg-aviso-global").value.trim(),
+        NUEVA_CLAVE_MAESTRA: document.getElementById("cfg-nueva-clave-maestra").value.trim()
+      };
+
+      try {
+        const res = await apiCall({
+          action: "guardarConfiguracionPortal",
+          token: appState.token,
+          devToken: appState.devToken,
+          config
+        });
+        if (manejarExpiracionDevToken(res)) return;
+        if (res.status === "ok") {
+          appState.devConfigCompleta = res.configCompleta || {};
+          document.getElementById("cfg-nueva-clave-maestra").value = "";
+          await refrescarDatosPortal();
+          alert(res.message);
+        } else {
+          alert(res.message);
+        }
+      } catch (e) {
+        alert("Error de red al guardar configuración.");
+      } finally {
+        btn.disabled = false;
+        btn.textContent = "Guardar Configuración del Portal ✅";
+      }
+    }
+
+    function manejarExpiracionDevToken(res) {
+      if (res && res.status === "dev_locked") {
+        sessionStorage.removeItem(KEYS.DEV_TOKEN);
+        appState.devToken = "";
+        abrirEstudioDesarrollador();
+        alert(res.message);
+        return true;
+      }
+      return false;
+    }
+
+    // Helpers UI
+    function cerrarModal(id) {
+      document.getElementById(id).classList.add("hidden");
+    }
+
+    function setInputVal(id, val) {
+      document.getElementById(id).value = val;
+    }
+
+    function appendChip(id, chip) {
+      const el = document.getElementById(id);
+      const cur = el.value.trim().toUpperCase();
+      if (!cur || cur === "TODOS" || cur === "TODAS") {
+        el.value = chip;
+        return;
+      }
+      const arr = cur.split(",").map(x => x.trim()).filter(Boolean);
+      if (!arr.includes(chip)) arr.push(chip);
+      el.value = arr.join(", ");
+    }
+
+    function copiarSnippetSso() {
+      const txt = document.getElementById("sso-snippet-box").textContent;
+      navigator.clipboard.writeText(txt).then(() => {
+        alert("📋 Código conector SSO copiado al portapapeles.");
+      });
+    }
+  </script>
+</body>
+</html>
